@@ -79,11 +79,12 @@ if (groups.Count == 0)
     securityGroup = await graphServiceClient.Groups
         .Request()
         .AddAsync(securityGroupInfo);
-    Console.WriteLine($"created {securityGroup.DisplayName}");
+    Console.WriteLine($"created Group {securityGroup.DisplayName}");
 }
 else
 {
     securityGroup = groups[0];
+    Console.WriteLine($"Group {securityGroup.DisplayName} already exists");
 }
 
 //Create an AccessPackage Catalog
@@ -98,47 +99,64 @@ var accessPackageCatalogInfo = new AccessPackageCatalog
 //make sure the group does not exist
 var accessPackageCatalogs = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageCatalogs
     .Request()
-    .Filter($"startswith(displayName, '{accessPackageCatalogInfo.DisplayName}')")
+    .Filter($"displayName eq '{accessPackageCatalogInfo.DisplayName}'")
     .Top(1)
     .GetAsync();
 
 AccessPackageCatalog accessPackageCatalog;
 if (accessPackageCatalogs.Count == 0)
 {
-
     //create the catalog
     accessPackageCatalog = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageCatalogs
     .Request()
     .AddAsync(accessPackageCatalogInfo);
+    Console.WriteLine($"created Catalog {accessPackageCatalogInfo.DisplayName}");
 }
 else
 {
     accessPackageCatalog = accessPackageCatalogs[0];
+    Console.WriteLine($"Catalog {accessPackageCatalogInfo.DisplayName} already exists");
 }
 
 //Add the group to the catalog as a resource
-var accessPackageResourceRequestInfo = new AccessPackageResourceRequestObject
-{
-    CatalogId = accessPackageCatalog.Id,
-    RequestType = "AdminAdd",
-    AccessPackageResource = new AccessPackageResource
-    {
-        OriginId = securityGroup.Id,
-        OriginSystem = "AadGroup",
-    }
-};
-
-//write the resource
-var accessPackageResourceRequest = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageResourceRequests
-                .Request()
-                .AddAsync(accessPackageResourceRequestInfo);
-
-//retrieve the resourceId
 var accessPackageResourceId = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageCatalogs[accessPackageCatalog.Id].AccessPackageResources
     .Request()
     .Filter($"originId eq '{securityGroup.Id}'")
     .GetAsync();
 
+if (accessPackageResourceId.Count == 0)
+{
+    //define the resource
+    var accessPackageResourceRequestInfo = new AccessPackageResourceRequestObject
+    {
+        CatalogId = accessPackageCatalog.Id,
+        RequestType = "AdminAdd",
+        AccessPackageResource = new AccessPackageResource
+        {
+            OriginId = securityGroup.Id,
+            OriginSystem = "AadGroup",
+        }
+    };
+
+    //write the resource
+    var accessPackageResourceRequest = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageResourceRequests
+                    .Request()
+                    .AddAsync(accessPackageResourceRequestInfo);
+
+    //retrieve the resourceId
+    accessPackageResourceId = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackageCatalogs[accessPackageCatalog.Id].AccessPackageResources
+        .Request()
+        .Filter($"originId eq '{securityGroup.Id}'")
+        .GetAsync();
+
+    Console.WriteLine($"created {securityGroup.DisplayName} as a resource in catalog {accessPackageCatalogInfo.DisplayName}");
+
+}
+else
+{
+    Console.WriteLine($"{securityGroup.DisplayName} is already a resource in catalog {accessPackageCatalogInfo.DisplayName}");
+
+}
 
 
 //create an AccessPackage in the catalog
@@ -151,12 +169,28 @@ var accessPackageInfo = new AccessPackage
     CatalogId = accessPackageCatalog.Id
 };
 
-//create the accesspackage
-var accessPackage = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackages
+//make sure the AccessPackage does not exist
+var accessPackages = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackages
     .Request()
-    .AddAsync(accessPackageInfo);
+    .Filter($"displayName eq '{accessPackageInfo.DisplayName}'")
+    .Top(1)
+    .GetAsync();
 
+AccessPackage accessPackage;
+if (accessPackages.Count == 0)
+{
 
+    //create the accesspackage
+    accessPackage = await graphServiceClient.IdentityGovernance.EntitlementManagement.AccessPackages
+   .Request()
+   .AddAsync(accessPackageInfo);
+    Console.WriteLine($"created AccessPackage {accessPackageInfo.DisplayName} in Catalog {accessPackageCatalog.DisplayName}");
+}
+else
+{
+    accessPackage = accessPackages[0];
+    Console.WriteLine($"AccessPackage {accessPackageCatalogInfo.DisplayName} already exists");
+}
 
 
 //define a scope for the accesspackage

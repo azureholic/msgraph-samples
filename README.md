@@ -7,7 +7,8 @@ More samples for different scenario's will follow.
 
 ### Prerequisites
 
-You will have to have permissions on your Azure AD to be able to give Admin Consent for API Access
+You will have to have permissions on your Azure AD to be able to Grant Admin Consent for API Access.
+
 Create an app registration in your Azure AD and generate a Secret (make sure to copy the secret as it will only be showed once).
 
 On the API Permissions blade, add Application Permissions for the MS Graph for these scopes
@@ -15,7 +16,9 @@ On the API Permissions blade, add Application Permissions for the MS Graph for t
 * EntitlementManagement.ReadWrite.All
 * Group.ReadWrite.All
 
-After cloning the repo and opening the c# solution in Visual Studio, right-click the project and choose Manage User Secrets.
+Make sure you Grant Admin Consent for these permissions after adding them.
+
+After cloning the repo and opening the C# solution in Visual Studio, right-click the project and choose Manage User Secrets.
 
 Transfer the values from the Client Registration
 

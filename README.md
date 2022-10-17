@@ -18,6 +18,7 @@ On the API Permissions blade, add Application Permissions for the MS Graph for t
 After cloning the repo and opening the c# solution in Visual Studio, right-click the project and choose Manage User Secrets.
 
 Transfer the values from the Client Registration
+
 * Application (client) ID
 * Directory (tenant) ID
 * and the Secret you've created in a previous step.
@@ -32,3 +33,5 @@ Enter the keys and values in the secret.json in Visual Studio. This will prevent
 }
 ```
 
+
+This sample uses the beta-version of the MSGraph SDK for C#

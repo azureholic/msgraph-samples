@@ -23,9 +23,12 @@ After cloning the repo and opening the c# solution in Visual Studio, right-click
 * and the Secret you've created in a previous step.
 
 Enter the keys and values in the secret.json in Visual Studio. This will prevent commiting this data to your Git Repository.
-`{ `
-`  "clientId" : "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", `
-`  "clientSecret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", `
-`  "tenantId" : "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx" `
-`}`
+
+```
+{ 
+  "clientId" : "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", `
+  "clientSecret":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "tenantId" : "xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx" `
+}
+```
 

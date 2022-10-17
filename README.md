@@ -17,7 +17,7 @@ On the API Permissions blade, add Application Permissions for the MS Graph for t
 
 After cloning the repo and opening the c# solution in Visual Studio, right-click the project and choose Manage User Secrets.
 
-* Transfer the values from the Client Registration
+Transfer the values from the Client Registration
 * Application (client) ID
 * Directory (tenant) ID
 * and the Secret you've created in a previous step.

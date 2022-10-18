@@ -33,6 +33,27 @@ def main():
     else:
         print(f"A Securitygroup {securtityGroup.DisplayName} already exists")
 
+    
+    someusername = input('Enter a username (e.g. xyz@<yourdomain.onmicrosoft.com):')
 
+    user_resp = graphServiceClient.get(f"/users?$filter=userPrincipalName eq '{someusername}'")
+    if (len(user_resp.json()["value"]) != 0):
+        #found the user, add user to group
+        groupid = group_resp.json()["value"][0]["id"]
+        userid = user_resp.json()["value"][0]["id"]
+
+        memberInfo = aadgroupModel.Membership()
+        memberInfo.id = f"https://graph.microsoft.com/v1.0/directoryObjects/{userid}"
+        payload = memberInfo.Serialize()
+        payload = payload.replace("id", "@odata.id")
+     
+
+        req_url = f"/groups/{groupid}/members/$ref"
+        member_resp = graphServiceClient.post(req_url, data=payload, headers={'Content-Type': 'application/json'})
+        print(member_resp)
+    else:
+        print("Username not found")
+
+    
 
 main()
